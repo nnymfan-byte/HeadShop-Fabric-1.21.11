@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "headshop",
+  "version": "${version}",
+  "name": "Head Shop",
+  "description": "Player-head currency shop with permanent PvP upgrades for Minecraft 1.21.11.",
+  "authors": ["nnymfan-byte"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["net.nnymfan.headshop.HeadShopMod"],
+    "client": ["net.nnymfan.headshop.HeadShopClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": ">=0.141.6+1.21.11"
+  }
+}
