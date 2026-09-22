@@ -64,7 +64,7 @@ public class HeadShopMod implements ModInitializer {
 
     private static void registerCommands(CommandDispatcher<net.minecraft.server.command.ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("headreset")
-                .requires(source -> source.getEntity() instanceof ServerPlayerEntity p && p.hasPermissionLevel(2))
+                .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
                 .executes(ctx -> {
                     STATE.reset();
                     for (ServerPlayerEntity p : ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
