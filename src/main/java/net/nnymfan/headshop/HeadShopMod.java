@@ -64,7 +64,7 @@ public class HeadShopMod implements ModInitializer {
 
     private static void registerCommands(CommandDispatcher<net.minecraft.server.command.ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("headreset")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.getPermissionLevel() >= 2)
                 .executes(ctx -> {
                     STATE.reset();
                     for (ServerPlayerEntity p : ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
@@ -88,7 +88,7 @@ public class HeadShopMod implements ModInitializer {
     }
 
     public static void openShop(PlayerEntity player) {
-        if (player.getWorld().isClient()) return;
+        if (player.getEntityWorld().isClient()) return;
         player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                 (syncId, inv, p) -> {
                     HeadShopScreenHandler menu = new HeadShopScreenHandler(syncId, inv);
@@ -99,7 +99,7 @@ public class HeadShopMod implements ModInitializer {
 
     private static void buildMainMenu(HeadShopScreenHandler menu, PlayerEntity player) {
         menu.clearMenu();
-        menu.fill(named(Items.SWORD, "⚔ Combat"), 10);
+        menu.fill(named(Items.DIAMOND_SWORD, "⚔ Combat"), 10);
         menu.fill(named(Items.SHIELD, "🛡 Defense / Hearts"), 13);
         menu.fill(named(Items.ENDER_PEARL, "✦ Mobility / Utility"), 16);
         menu.fill(named(Items.PLAYER_HEAD, "Heads: " + STATE.get(player.getUuid()).heads + "/15"), 22);
@@ -116,7 +116,7 @@ public class HeadShopMod implements ModInitializer {
         if (name.contains("Combat")) showCategory((ServerPlayerEntity) player, "Combat", new String[]{"Strength", "Haste"}, new int[]{0, 1});
         else if (name.contains("Defense")) showCategory((ServerPlayerEntity) player, "Defense / Hearts", new String[]{"Hearts", "Resistance", "Regeneration", "Fire Resistance"}, new int[]{2, 3, 4, 5});
         else if (name.contains("Mobility")) showCategory((ServerPlayerEntity) player, "Mobility / Utility", new String[]{"Speed", "Jump Boost", "Night Vision", "Water Breathing"}, new int[]{6, 7, 8, 9});
-        else if (name.startsWith("Buy:")) purchase((ServerPlayerEntity) player, Integer.parseInt(name.substring(4).trim()));
+        else if (name.startsWith("Buy:")) { int end = name.indexOf(" |", 4); if (end > 4) purchase((ServerPlayerEntity) player, Integer.parseInt(name.substring(4, end).trim())); }
         else if (name.equals("← Back")) openShop(player);
     }
 
@@ -142,7 +142,7 @@ public class HeadShopMod implements ModInitializer {
             case 0 -> Items.DIAMOND_SWORD; case 1 -> Items.GOLDEN_PICKAXE;
             case 2 -> Items.GOLDEN_APPLE; case 3 -> Items.SHIELD; case 4 -> Items.GLISTERING_MELON_SLICE;
             case 5 -> Items.MAGMA_CREAM; case 6 -> Items.SUGAR; case 7 -> Items.RABBIT_FOOT;
-            case 8 -> Items.ENDER_EYE; default -> Items.WATER_BOTTLE;
+            case 8 -> Items.ENDER_EYE; default -> Items.GLASS_BOTTLE;
         };
     }
 
